@@ -12,8 +12,8 @@ export function normalizeWhitespaces(str: string): string {
  * Given a base type, allows type safe access to the name of a property.
  * @param prop The property name
  */
-export function propertyPath<T>(prop: keyof Pick<T, KnownKeys<T>>): string {
-  return prop.toString();
+export function propertyPath<T>(prop: KnownKeys<T>): string {
+  return String(prop);
 }
 
 /**
@@ -26,8 +26,8 @@ export function propertyPath<T>(prop: keyof Pick<T, KnownKeys<T>>): string {
 export class PropertyPathBuilder<T> {
   constructor(private readonly pathSoFar: string[]) {}
 
-  public prop<TProp extends KnownKeys<T>>(prop: TProp): PropertyPathBuilder<Pick<T, KnownKeys<T>>[TProp]> {
-    return new PropertyPathBuilder<Pick<T, KnownKeys<T>>[TProp]>([...this.pathSoFar, prop.toString()]);
+  public prop<TProp extends KnownKeys<T> & keyof T>(prop: TProp): PropertyPathBuilder<Pick<T, TProp>[TProp]> {
+    return new PropertyPathBuilder<Pick<T, TProp>[TProp]>([...this.pathSoFar, prop.toString()]);
   }
 
   /**
